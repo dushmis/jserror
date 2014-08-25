@@ -13,4 +13,5 @@ indexes:
 - kind: jserror
   properties:
   - name: date
+    direction: desc
   - name: err_
