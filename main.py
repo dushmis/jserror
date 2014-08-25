@@ -11,6 +11,10 @@ from google.appengine.ext import ndb
 from google.appengine.ext import blobstore
 from google.appengine.api import files
 
+from google.appengine.api import users
+
+
+
 class jserror(ndb.Model):
   err_ = ndb.StringProperty()
   content_ = ndb.TextProperty()
@@ -22,6 +26,7 @@ class jserror(ndb.Model):
 class MainHandler(webapp2.RequestHandler):
   def get(self):
     self.response.write("hey?")
+    
   def post(self):
     self.response.headers.add_header("Access-Control-Allow-Origin", "*")
     if self.request.get("er"):
@@ -34,7 +39,14 @@ class MainHandler(webapp2.RequestHandler):
 
 class AdminHandler(webapp2.RequestHandler):
   def get(self):
-    self.response.write("hey...?")
+    user = users.get_current_user()
+    if user:
+      self.response.headers['Content-Type'] = 'text/html'
+      greeting = ('Welcome, %s! (<a href="%s">sign out</a>)' %
+                        (user.nickname(), users.create_logout_url('/')))
+      self.response.write(greeting)
+    else:
+      self.redirect(users.create_login_url(self.request.uri))
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
