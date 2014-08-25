@@ -1,0 +1,32 @@
+application: gelogger
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: no
+
+default_expiration: "1d"
+
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+- url: /js
+  static_dir: js
+  http_headers:
+     Access-Control-Allow-Methods: GET
+
+- url: /.*
+  script: main.app
+
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+
+inbound_services:
+- warmup
+
+automatic_scaling:
+  max_idle_instances: 1
+  min_idle_instances: 1
